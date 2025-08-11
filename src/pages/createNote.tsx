@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 import { ArrowLeft } from "lucide-react"
 import { useState, type SyntheticEvent } from "react"
 import { Link, useNavigate } from "react-router"
@@ -7,8 +7,13 @@ import toast from "react-hot-toast"
 
 const INPUTCLASS = "border-1 border-zinc-400 rounded-xl w-full p-4 mt-2"
 
+interface data {
+  title: string;
+  content: string;
+}
+
 const CreateNote = () => {
-  const [postData, setPostData] = useState({ title: "", content: "" })
+  const [postData, setPostData] = useState<data>({ title: "", content: "" })
   const [isLimited, setLimited] = useState(false)
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
@@ -30,8 +35,9 @@ const CreateNote = () => {
         }
       })
       toast.success("Note created successfully!")
-    } catch (error) {
-      if (error?.response?.status! === 429) {
+    } catch (e:unknown) {
+      const error = e as AxiosError
+      if (error?.response?.status === 429) {
         setLimited(true)
       } else {
         toast.error("Failed to create notes")
