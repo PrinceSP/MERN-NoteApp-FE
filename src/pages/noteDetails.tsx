@@ -1,14 +1,21 @@
 import axios from "axios"
 import { ArrowLeft, LoaderIcon, Trash2 } from "lucide-react"
-import { useEffect, useState, type SyntheticEvent } from "react"
+import { useEffect, useState, type FormEvent, type MouseEvent } from "react"
 import toast from "react-hot-toast"
 import { Link, useNavigate, useParams } from "react-router"
 import RateLimited from "../components/rateLimited"
+import api from "../lib/axios"
 
 const INPUTCLASS = "border-1 border-zinc-400 rounded-xl w-full p-4 mt-2"
 
+interface noteData {
+  title: string;
+  content: string;
+  _id?:string;
+}
+
 const NoteDetails = () => {
-  const [note, setNote] = useState<object | null>({ title: "", content: "" })
+  const [note, setNote] = useState<noteData>({ title: "", content: "" })
   const [loading, setLoading] = useState<boolean>(true)
   const [isLimited, setLimited] = useState<boolean>(false)
   const navigate = useNavigate()
@@ -16,7 +23,7 @@ const NoteDetails = () => {
 
   const getNote = async (noteId: string | undefined) => {
     try {
-      await axios.get(`http://localhost:5000/api/notes/${noteId}`)
+      await axios.get(`${api}/notes/${noteId}`)
         .then(result => setNote(result.data))
     } catch (error) {
       toast.error("Can't get your note")
@@ -25,13 +32,13 @@ const NoteDetails = () => {
     }
   }
 
-  const deleteNote = async (e: SyntheticEvent<HTMLFormElement>, noteId: string | undefined) => {
+  const deleteNote = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, noteId: string | undefined) => {
     e.preventDefault()
 
     if (!window.confirm("Are you sure want to delete this note?")) return
 
     try {
-      await axios.delete(`http://localhost:5000/api/notes/${noteId}`)
+      await axios.delete(`${api}/notes/${noteId}`)
       toast.success("Successfully delete your note!")
     } catch (error) {
       toast.error("Can't delete your note!")
@@ -41,7 +48,7 @@ const NoteDetails = () => {
     }
   }
 
-  const updateNote = async (e: SyntheticEvent<HTMLFormElement>, noteId: string | undefined) => {
+  const updateNote = async (e: FormEvent<HTMLFormElement>, noteId: string | undefined) => {
     e.preventDefault()
     if (!note?.title.trim() || !note?.content.trim()) {
       toast.error("Please add a title or content")
@@ -51,7 +58,7 @@ const NoteDetails = () => {
 
     setLoading(true)
     try {
-      await axios.put(`http://localhost:5000/api/notes/${noteId}`, { ...note })
+      await axios.put(`${api}/notes/${noteId}`, { ...note })
       toast.success("Successfully updating your note!")
     } catch (error) {
       toast.error("Can't update your note")
