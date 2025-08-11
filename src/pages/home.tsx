@@ -4,17 +4,26 @@ import toast from "react-hot-toast"
 import Navbar from "../components/navbar"
 import Notes from "../components/notes"
 
+interface NoteData {
+  title: string
+  content: string
+  _id: string
+  createdAt: string
+}
+
 const Home = () => {
-  const [notes, setNotes] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [notes, setNotes] = useState<NoteData[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
 
   const fetchNotes = async () => {
     try {
-      const result = await axios.get("http://localhost:5000/api/notes").then(res => res.data)
+      const result: NoteData[] = await axios.get<NoteData[]>("http://localhost:5000/api/notes").then(res => res.data)
       setNotes(result)
     } catch (error) {
-      if (error.response?.status === 500) {
-        toast.error("Failed to load notes")
+      if (error instanceof TypeError) {
+        toast.error('Network error occurred')
+      } else {
+        toast.error('Failed to load notes')
       }
     } finally {
       setLoading(false)
