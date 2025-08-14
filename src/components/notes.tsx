@@ -19,7 +19,7 @@ interface NotesProps {
 
 const Notes: React.FC<NotesProps> = ({ item, setNotes }) => {
 
-  const deleteEvent = async (e: MouseEvent<HTMLButtonElement>, noteId: string) => {
+  async function deleteEvent(e: MouseEvent<HTMLButtonElement>, noteId: string) {
     e.preventDefault();
 
     if (!window.confirm("Are you sure want to delete this note?")) return;

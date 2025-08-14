@@ -10,7 +10,7 @@ const INPUTCLASS = "border-1 border-zinc-400 rounded-xl w-full p-4 mt-2"
 interface noteData {
   title: string;
   content: string;
-  _id?:string;
+  _id?: string;
 }
 
 const NoteDetails = () => {
@@ -20,7 +20,7 @@ const NoteDetails = () => {
   const navigate = useNavigate()
   const { id } = useParams()
 
-  const getNote = async (noteId: string | undefined) => {
+  async function getNote(noteId: string | undefined) {
     try {
       await api.get(`/notes/${noteId}`).then(result => setNote(result.data))
     } catch (error) {
@@ -30,7 +30,7 @@ const NoteDetails = () => {
     }
   }
 
-  const deleteNote = async (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, noteId: string | undefined) => {
+  async function deleteNote(e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>, noteId: string | undefined) {
     e.preventDefault()
 
     if (!window.confirm("Are you sure want to delete this note?")) return
@@ -46,7 +46,7 @@ const NoteDetails = () => {
     }
   }
 
-  const updateNote = async (e: FormEvent<HTMLFormElement>, noteId: string | undefined) => {
+  async function updateNote(e: FormEvent<HTMLFormElement>, noteId: string | undefined) {
     e.preventDefault()
     if (!note?.title.trim() || !note?.content.trim()) {
       toast.error("Please add a title or content")

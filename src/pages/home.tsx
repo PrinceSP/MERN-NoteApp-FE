@@ -16,10 +16,9 @@ const Home = () => {
   const [notes, setNotes] = useState<NoteData[]>([])
   const [loading, setLoading] = useState<boolean>(true)
 
-  const fetchNotes = async () => {
+  async function fetchNotes() {
     try {
       const res: NoteData[] = await api.get("/notes").then(res => res.data);
-
       setNotes(res);
     } catch (error) {
       if (error instanceof TypeError) {
